@@ -83,7 +83,7 @@ function addVisit(data) {
   const visit = {
     ...visitDefaults,
     ...data,
-    _id: crypto.randomUUID(),
+    _id: newId(),
     userId: CURRENT_USER_ID,
     createdAt: new Date().toISOString(),
   };
@@ -189,9 +189,27 @@ function seedIfEmpty() {
       SEED_VISITS.map((v, i) => ({
         ...visitDefaults,
         ...v,
-        _id: crypto.randomUUID(),
+        _id: newId(),
         createdAt: new Date(Date.now() - i * 86400000).toISOString(),
       }))
     );
   }
 }
+
+// Secure contexts (http://localhost, https) have crypto.randomUUID; file:// doesn't.
+function newId() {
+  return crypto.randomUUID ? crypto.randomUUID() : 'id-' + Math.random().toString(36).slice(2);
+}
+
+// Single namespace consumed by app.js — swap its insides for fetch() later.
+const store = {
+  getSession,
+  syncUser,
+  signOut,
+  getAll,
+  getVisits,
+  addVisit,
+  updateVisit,
+  deleteVisit,
+  seedIfEmpty,
+};

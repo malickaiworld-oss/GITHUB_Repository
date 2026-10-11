@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>0 to Shipped — Resume Parser</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+
+  <nav class="nav">
+    <div class="nav-inner">
+      <a class="brand" href="#">🚀 0 <span class="brand-accent">to</span> shipped</a>
+      <span class="nav-tag">resume parser · mock</span>
+      <a class="btn btn-outline btn-sm" href="#upload">Analyze my resume</a>
+    </div>
+  </nav>
+
+  <header class="hero">
+    <div class="hero-inner">
+      <p class="hero-kicker">0 to shipped resume parser</p>
+      <h1>Upload your resume.<br />See what's <em>present</em> and what's <em>missing</em>.</h1>
+      <p class="hero-sub">
+        Get a ship-readiness score out of 100 plus the skills a hiring bar expects —
+        so your resume goes from 0 to shipped.
+      </p>
+
+      <div class="upload-card" id="upload">
+        <div id="dropzone" class="dropzone" role="button" tabindex="0">
+          <input id="file-input" type="file" accept="application/pdf,.pdf" hidden />
+          <div class="dropzone-icon">📄</div>
+          <p class="dropzone-main">Drag &amp; drop your PDF here</p>
+          <p class="dropzone-alt">or <span class="link">browse files</span></p>
+        </div>
+
+        <div id="file-chip" class="file-chip hidden">
+          <span>📄</span>
+          <div class="file-meta">
+            <span id="file-name"></span>
+            <span id="file-size" class="file-size"></span>
+          </div>
+          <button id="file-remove" type="button" class="chip-x" aria-label="Remove file">✕</button>
+        </div>
+
+        <div id="upload-error" class="upload-error hidden"></div>
+
+        <div class="upload-actions">
+          <button id="analyze-btn" class="btn btn-primary" disabled>Analyze resume</button>
+          <button id="sample-btn" class="btn btn-outline">Try a sample</button>
+        </div>
+
+        <div id="progress" class="progress hidden">
+          <div class="progress-track"><div class="progress-fill" id="progress-fill"></div></div>
+          <p id="progress-step" class="progress-step"></p>
+        </div>
+      </div>
+
+      <p class="hero-note">
+        Mock build — the parser is simulated until the backend lands. Nothing leaves your browser,
+        and the same file always gets the same score.
+      </p>
+    </div>
+  </header>
+
+  <section id="results" class="results hidden" aria-live="polite">
+    <div class="results-inner">
+      <h2>Analysis for <span id="result-file"></span></h2>
+      <div class="results-grid">
+        <div class="score-card">
+          <div class="score-num" id="score-num">–</div>
+          <div class="score-verdict" id="score-verdict"></div>
+          <div class="score-bar"><div class="score-bar-fill" id="score-bar-fill"></div></div>
+          <p class="score-label">ship-readiness score</p>
+        </div>
+        <div class="skills-col">
+          <div class="skill-group">
+            <h3>✅ Skills present <span id="present-count" class="count"></span></h3>
+            <div class="badges" id="present-badges"></div>
+          </div>
+          <div class="skill-group">
+            <h3>🚫 Skills missing <span id="missing-count" class="count"></span></h3>
+            <div class="badges" id="missing-badges"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="how">
+    <div class="how-inner">
+      <h2>How it works</h2>
+      <ol class="how-grid">
+        <li><span>1</span><h3>Upload</h3><p>Drop a PDF resume — this mock reads nothing and sends nothing anywhere.</p></li>
+        <li><span>2</span><h3>Parse</h3><p>The parser extracts your text and matches it against the skills a hiring bar expects.</p></li>
+        <li><span>3</span><h3>Ship</h3><p>Close the missing-skill gaps, lift the score, ship the resume.</p></li>
+      </ol>
+    </div>
+  </section>
+
+  <footer class="footer">0 to shipped resume parser · mock design per resume_tracker/decisions.md</footer>
+
+  <script src="js/app.js"></script>
+</body>
+</html>

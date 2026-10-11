@@ -1,0 +1,27 @@
+# --- Dependencies ---
+node_modules/
+
+# --- Environment & secrets (MongoDB URI, Firebase keys) ---
+.env
+.env.*
+!.env.example
+
+# --- Logs ---
+logs/
+*.log
+npm-debug.log*
+
+# --- Build output ---
+dist/
+build/
+
+# --- Test coverage ---
+coverage/
+
+# --- OS junk ---
+.DS_Store
+Thumbs.db
+
+# --- Editor ---
+.vscode/
+.idea/
