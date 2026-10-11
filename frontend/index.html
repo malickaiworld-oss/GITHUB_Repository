@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Travel &amp; Visit Memory Vault</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <script>
+    tailwind.config = { theme: { extend: { fontFamily: { sans: ['Inter', 'system-ui', 'sans-serif'] } } } };
+  </script>
+</head>
+<body class="min-h-screen bg-slate-100 font-sans text-slate-800">
+
+  <!-- ============ AUTH VIEW (simulated until Firebase/Passport is wired) ============ -->
+  <section id="auth-view" class="hidden min-h-screen items-center justify-center bg-gradient-to-br from-indigo-600 via-indigo-500 to-sky-500 p-4">
+    <div class="w-full max-w-md rounded-2xl bg-white p-8 shadow-xl">
+      <div class="mb-6 text-center">
+        <div class="text-4xl">🧳</div>
+        <h1 class="mt-2 text-2xl font-extrabold">Travel &amp; Visit Memory Vault</h1>
+        <p class="mt-1 text-sm text-slate-500">Log, recall and filter memories from past trips.</p>
+      </div>
+
+      <div id="auth-error" class="mb-4 hidden rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-600"></div>
+
+      <form id="auth-form" class="space-y-4">
+        <div id="name-field" class="hidden">
+          <label class="mb-1 block text-sm font-medium text-slate-600" for="auth-name">Name</label>
+          <input id="auth-name" type="text" placeholder="Ada Lovelace"
+                 class="w-full rounded-lg border border-slate-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-400" />
+        </div>
+        <div>
+          <label class="mb-1 block text-sm font-medium text-slate-600" for="auth-email">Email</label>
+          <input id="auth-email" type="email" required placeholder="you@example.com"
+                 class="w-full rounded-lg border border-slate-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-400" />
+        </div>
+        <div>
+          <label class="mb-1 block text-sm font-medium text-slate-600" for="auth-password">Password</label>
+          <input id="auth-password" type="password" required minlength="6" placeholder="••••••••"
+                 class="w-full rounded-lg border border-slate-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-400" />
+        </div>
+        <button id="auth-submit" type="submit"
+                class="w-full rounded-lg bg-indigo-600 py-2.5 font-semibold text-white transition hover:bg-indigo-700">
+          Sign in
+        </button>
+      </form>
+
+      <div class="my-5 flex items-center gap-3">
+        <span class="h-px flex-1 bg-slate-200"></span>
+        <span class="text-xs uppercase text-slate-400">or</span>
+        <span class="h-px flex-1 bg-slate-200"></span>
+      </div>
+
+      <button id="google-btn" type="button"
+              class="flex w-full items-center justify-center gap-2 rounded-lg border border-slate-300 py-2.5 font-medium transition hover:bg-slate-50">
+        <span>🌐</span> Sign in with Google
+      </button>
+
+      <p class="mt-6 text-center text-sm text-slate-500">
+        <span id="auth-switch-text">New here?</span>
+        <button id="auth-switch" type="button" class="font-semibold text-indigo-600 hover:underline">Create an account</button>
+      </p>
+
+      <p class="mt-4 text-center text-[11px] text-slate-400">
+        Frontend demo — authentication is simulated locally until the backend is connected.
+      </p>
+    </div>
+  </section>
+
+  <!-- ============ DASHBOARD / MEMORY VAULT ============ -->
+  <section id="app-view" class="hidden mx-auto max-w-6xl p-4 md:p-6">
+    <header class="mb-6 flex flex-wrap items-center gap-3">
+      <h1 class="flex items-center gap-2 text-2xl font-extrabold">🧳 Travel &amp; Visit Memory Vault</h1>
+      <div class="ml-auto flex items-center gap-2">
+        <button id="add-btn"
+                class="rounded-lg bg-indigo-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-indigo-700">
+          + Add memory
+        </button>
+        <div class="flex items-center gap-2 rounded-lg border border-slate-200 bg-white px-3 py-2">
+          <span id="user-avatar" class="flex h-6 w-6 items-center justify-center rounded-full bg-indigo-100 text-xs font-bold text-indigo-700">?</span>
+          <span id="user-name" class="text-sm font-medium"></span>
+        </div>
+        <button id="logout-btn" class="rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm font-medium text-slate-600 transition hover:bg-slate-50">
+          Log out
+        </button>
+      </div>
+    </header>
+
+    <!-- Search & filter bar -->
+    <div class="mb-6 grid gap-3 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm md:grid-cols-[1fr_auto]">
+      <div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+        <input id="filter-search" type="search" placeholder="Search venue or comments…"
+               class="rounded-lg border border-slate-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400" />
+        <select id="filter-country"
+                class="rounded-lg border border-slate-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400"></select>
+        <select id="filter-category"
+                class="rounded-lg border border-slate-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400"></select>
+        <select id="filter-rating"
+                class="rounded-lg border border-slate-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400">
+          <option value="0">Any rating</option>
+          <option value="3">3★ &amp; up</option>
+          <option value="4">4★ &amp; up</option>
+          <option value="5">5★ only</option>
+        </select>
+      </div>
+      <button id="clear-filters" class="self-start rounded-lg border border-slate-200 px-4 py-2 text-sm font-medium text-slate-500 transition hover:bg-slate-50">
+        Clear
+      </button>
+    </div>
+
+    <!-- Smart recommendation highlights -->
+    <section id="highlights-section" class="mb-6">
+      <h2 class="mb-3 text-sm font-bold uppercase tracking-wide text-slate-500">✨ Smart recommendations</h2>
+      <div id="highlights" class="grid gap-3 sm:grid-cols-2 lg:grid-cols-4"></div>
+    </section>
+
+    <!-- Visit cards grid -->
+    <section>
+      <h2 class="mb-3 text-sm font-bold uppercase tracking-wide text-slate-500">
+        Your memories <span id="visit-count" class="ml-1 font-medium normal-case text-slate-400"></span>
+      </h2>
+      <div id="visits-grid" class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3"></div>
+      <div id="empty-state" class="hidden rounded-2xl border border-dashed border-slate-300 py-16 text-center text-slate-400"></div>
+    </section>
+  </section>
+
+  <!-- ============ ADD / EDIT VISIT MODAL ============ -->
+  <div id="modal-backdrop" class="fixed inset-0 z-40 hidden bg-black/50"></div>
+  <div id="visit-modal" class="fixed inset-0 z-50 hidden overflow-y-auto p-4">
+    <div class="flex min-h-full items-center justify-center">
+      <form id="visit-form" novalidate class="max-h-[90vh] w-full max-w-lg space-y-4 overflow-y-auto rounded-2xl bg-white p-6 shadow-2xl">
+        <div class="flex items-center justify-between">
+          <h3 id="modal-title" class="text-lg font-bold">Add visit memory</h3>
+          <button type="button" id="modal-close" class="text-xl leading-none text-slate-400 hover:text-slate-600">✕</button>
+        </div>
+
+        <div id="form-error" class="hidden rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-600"></div>
+
+        <div class="grid gap-4 sm:grid-cols-2">
+          <div>
+            <label class="mb-1 block text-sm font-medium text-slate-600" for="f-country">Country *</label>
+            <input id="f-country" type="text" placeholder="Singapore"
+                   class="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400" />
+          </div>
+          <div>
+            <label class="mb-1 block text-sm font-medium text-slate-600" for="f-category">Category *</label>
+            <select id="f-category"
+                    class="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400"></select>
+          </div>
+          <div>
+            <label class="mb-1 block text-sm font-medium text-slate-600" for="f-placeType">Place type</label>
+            <input id="f-placeType" type="text" list="place-types" placeholder="Airport"
+                   class="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400" />
+            <datalist id="place-types">
+              <option value="Airport"></option>
+              <option value="Nightlife district"></option>
+              <option value="Beach"></option>
+              <option value="Museum"></option>
+              <option value="Landmark"></option>
+              <option value="Park"></option>
+              <option value="Market"></option>
+              <option value="Mall"></option>
+              <option value="Hotel"></option>
+              <option value="Mountain trail"></option>
+              <option value="Restaurant"></option>
+            </datalist>
+          </div>
+          <div>
+            <label class="mb-1 block text-sm font-medium text-slate-600" for="f-photoUrl">Photo link</label>
+            <input id="f-photoUrl" type="url" placeholder="https://…"
+                   class="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400" />
+          </div>
+          <div class="sm:col-span-2">
+            <label class="mb-1 block text-sm font-medium text-slate-600" for="f-venue">Primary venue *</label>
+            <input id="f-venue" type="text" placeholder="Anjappar"
+                   class="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400" />
+          </div>
+          <div class="sm:col-span-2">
+            <label class="mb-1 block text-sm font-medium text-slate-600" for="f-alternatives">Alternative venues</label>
+            <input id="f-alternatives" type="text" placeholder="McDonald, Raza, Zamzam"
+                   class="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400" />
+            <p class="mt-1 text-xs text-slate-400">Separate multiple venues with commas.</p>
+          </div>
+          <div class="sm:col-span-2">
+            <span class="mb-1 block text-sm font-medium text-slate-600">Rating *</span>
+            <div id="star-input" class="flex gap-1 text-2xl">
+              <button type="button" data-star="1" class="text-slate-300 transition hover:scale-110">★</button>
+              <button type="button" data-star="2" class="text-slate-300 transition hover:scale-110">★</button>
+              <button type="button" data-star="3" class="text-slate-300 transition hover:scale-110">★</button>
+              <button type="button" data-star="4" class="text-slate-300 transition hover:scale-110">★</button>
+              <button type="button" data-star="5" class="text-slate-300 transition hover:scale-110">★</button>
+            </div>
+          </div>
+          <div class="sm:col-span-2">
+            <label class="mb-1 block text-sm font-medium text-slate-600" for="f-comments">Comments</label>
+            <textarea id="f-comments" rows="3" placeholder="Parotta is good in Anjappar"
+                      class="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400"></textarea>
+          </div>
+        </div>
+
+        <div class="flex justify-end gap-2 pt-2">
+          <button type="button" id="modal-cancel" class="rounded-lg border border-slate-200 px-4 py-2 text-sm font-medium text-slate-600 transition hover:bg-slate-50">Cancel</button>
+          <button type="submit" class="rounded-lg bg-indigo-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-indigo-700">Save memory</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="js/store.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
